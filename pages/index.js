@@ -1,6 +1,8 @@
+import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
 
-export default function Home() {
+// This disables SSR for this page
+const Home = dynamic(() => Promise.resolve(() => {
   const [isClient, setIsClient] = useState(false); // A state to check if it's running on client
   const [companyId, setCompanyId] = useState('');
   const [file, setFile] = useState(null);
@@ -101,7 +103,9 @@ export default function Home() {
       )}
     </div>
   );
-}
+}), { ssr: false }); // Disabling SSR for this component
+
+export default Home;
 
 const styles = {
   container: {
