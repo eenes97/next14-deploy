@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
+  const [isClient, setIsClient] = useState(false); // A state to check if it's running on client
   const [companyId, setCompanyId] = useState('');
   const [file, setFile] = useState(null);
   const [vectorizeResponse, setVectorizeResponse] = useState(null);
   const [chatInput, setChatInput] = useState('');
   const [chatResponse, setChatResponse] = useState(null);
+
+  // Detect if we are in the browser
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleFileChange = async (e) => {
     const uploadedFile = e.target.files[0];
@@ -44,11 +50,12 @@ export default function Home() {
     });
 
     const data = await response.json();
-    
-    // Extract and clean the 'response' part
-    const cleanedResponse = data.response.replace(/\n/g, '<br>');
-    setChatResponse(cleanedResponse);
+    setChatResponse(data);
   };
+
+  if (!isClient) {
+    return null; // Return nothing during SSR
+  }
 
   return (
     <div style={styles.container}>
